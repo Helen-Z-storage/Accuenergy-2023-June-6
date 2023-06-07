@@ -40,7 +40,7 @@ onMounted(async () => {
         return;
       }
 
-      const { Marker } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary
+      await google.maps.importLibrary('marker') as google.maps.MarkerLibrary
 
       const icon = {
         url: firstPlace.icon,

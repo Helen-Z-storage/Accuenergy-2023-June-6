@@ -8,14 +8,36 @@
 import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
-  markers: any[]
+  markers: any[],
+  toLocation: boolean,
 }>()
 
 const rootRef = ref();
 const googleMapInst = ref();
+const currLocation = ref({lat: 0, lng: 0});
+
+
 onMounted(async () => {
   if (!rootRef.value) {
     console.warn('地图容器不存在')
+    return
+  }
+
+  // Try HTML5 geolocation, setting curr.location
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        currLocation.value = pos
+      },
+      () => console.warn("Error: The Geolocation service failed")
+    );
+  } else {
+    // Browser doesn't support Geolocation
+    console.warn("Browser doesn't support Geolocation")
     return
   }
 
@@ -23,9 +45,7 @@ onMounted(async () => {
     const MapsLibrary = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;;
     googleMapInst.value = new MapsLibrary.Map(rootRef.value, {
       zoom: 7,
-      center: {
-        lat: -25.344, lng: 131.031
-      },
+      center: currLocation.value,
       disableDefaultUI: true
     })
   } catch (error) {
@@ -34,12 +54,22 @@ onMounted(async () => {
 })
 
 const markerMap = new Map();
+watch(() => props.toLocation, (toLocation) => {
+  if (toLocation && googleMapInst.value) {
+    console.log("props.toLocation")
+    googleMapInst.value.setCenter(currLocation.value);
+    console.log("set center")
+    // handleGetLocation(false);
+  }
+
+})
+
 
 watch(() => props.markers, (list) => {
 
   if (list.length === 0) {
     // 清空谷歌地图
-    markerMap.forEach((item, key) => {
+    markerMap.forEach((_, key) => {
       const marker = markerMap.get(key);
       marker.setMap(null)
     })

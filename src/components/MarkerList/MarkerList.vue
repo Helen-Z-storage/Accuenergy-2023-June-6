@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const props = defineProps<{
+defineProps<{
   markers: any[]
 }>()
 const emits = defineEmits(['delete'])
