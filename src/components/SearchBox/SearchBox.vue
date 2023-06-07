@@ -1,6 +1,7 @@
 <template>
   <div class="searchBox">
     <input type="text" ref="inputRef">
+    <!--<button id="search-button">Search</button>-->
   </div>
 </template>
 
@@ -11,6 +12,7 @@ const emits = defineEmits(['selected-address'])
 
 const inputRef = ref();
 const searchBoxInst = ref<google.maps.places.SearchBox>();
+//const onClickSearch = ref();
 
 onMounted(async () => {
   if (!inputRef.value) {
@@ -21,7 +23,7 @@ onMounted(async () => {
   try {
     const PlacesLibrary = await google.maps.importLibrary("places") as google.maps.PlacesLibrary
     searchBoxInst.value = new PlacesLibrary.SearchBox(inputRef.value)
-    // 绑定时间
+    // 绑定 event
     searchBoxInst.value.addListener('places_changed', async () => {
       const places = searchBoxInst.value!.getPlaces() as google.maps.places.PlaceResult[];
 
@@ -54,6 +56,14 @@ onMounted(async () => {
         key: firstPlace.formatted_address??'' + new Date().getTime(), bounds, icon, title: firstPlace.formatted_address, position: firstPlace.geometry.location
       })
     })
+    // search button event
+    /*
+    onClickSearch.value = () => {
+      google.maps.event.trigger(searchBoxInst, 'focus', {});
+      //google.maps.event.trigger(input, 'keydown', { keyCode: 13 });
+      google.maps.event.trigger(this, 'focus', {});
+    };
+    */
   } catch (error) {
     // TODO
   }
