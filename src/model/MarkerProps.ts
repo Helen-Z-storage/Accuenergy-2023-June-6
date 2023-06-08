@@ -1,10 +1,7 @@
-import type { PositionProps } from "@/model/PositionProps"
-import type { IconProps } from "@/model/IconProps"
-
 export interface MarkerProps {
   key: string 
-  bounds: object
-  icon: IconProps
+  bounds: google.maps.LatLngBounds
+  icon: google.maps.Icon
   title: string
-  position: PositionProps
+  position: google.maps.LatLngLiteral
 }

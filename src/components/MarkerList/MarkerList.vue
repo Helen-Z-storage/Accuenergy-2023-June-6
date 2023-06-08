@@ -24,17 +24,19 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, type Ref } from 'vue';
+import type { MarkerProps } from "@/model/MarkerProps"
 
 const props = defineProps<{
-  markers: any[]
+  markers: Array<MarkerProps>
 }>()
 const emits = defineEmits(['delete'])
-const selectedMarker: Ref<string[]> = ref([])
+const selectedMarker: Ref<Array<string>> = ref([])
 const handleDelete = () => {
   emits('delete', selectedMarker.value)
 }
 
 const paging = ref({ page: 1, size: 2 })
+
 watch([...props.markers], () => {
   paging.value.page = 1;
 })

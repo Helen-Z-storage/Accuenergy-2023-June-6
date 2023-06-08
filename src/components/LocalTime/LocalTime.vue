@@ -7,9 +7,10 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue';
 import fetchTimeZoneByLocationAndTimestamp from "@/api/fetchTimeZoneByLocationAndTimestamp";
+import type { MarkerProps } from "@/model/MarkerProps"
 
 const props = defineProps<{
-  lastMarker: any
+  lastMarker: MarkerProps
 }>()
 
 const currDate = ref(new Date())
