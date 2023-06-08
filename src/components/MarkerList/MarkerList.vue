@@ -1,6 +1,6 @@
 <template>
   <div class="markerList">
-    <button @click="handleDelete">删除选中的Marker</button>
+    <button @click="handleDelete">Delete Selected Marker</button>
     <div class="markerList_main">
       <template v-for="item in paginatedMarkers">
         <label class="markerList_item" :for="item.key">
@@ -23,17 +23,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, type Ref } from 'vue';
 
 const props = defineProps<{
   markers: any[]
 }>()
 const emits = defineEmits(['delete'])
-const selectedMarker = ref([])
+const selectedMarker: Ref<string[]> = ref([])
 const handleDelete = () => {
   emits('delete', selectedMarker.value)
 }
-
 
 const paging = ref({ page: 1, size: 2 })
 watch([...props.markers], () => {

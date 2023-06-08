@@ -33,7 +33,7 @@ const handleClick = async () => {
       const placesService = new PlacesService(document.createElement('div'));
       var placeId = predictions[0].place_id;
       placesService.getDetails({ placeId: placeId }, function (place, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
+        if (status == google.maps.places.PlacesServiceStatus.OK && place && place.geometry) {
           console.log('First place found: ', place);
 
           const icon = {
@@ -45,11 +45,14 @@ const handleClick = async () => {
           };
 
           emits('selected-address', {
-            key: place.formatted_address ?? '' + new Date().getTime(), bounds, icon, title: place.formatted_address, position: place.geometry.location
+            key: place.formatted_address ?? '' + new Date().getTime(), 
+            bounds, 
+            icon, 
+            title: place.formatted_address, 
+            position: place.geometry.location
           })
         }
       });
-
     }
   });
 }
@@ -81,7 +84,6 @@ onMounted(async () => {
         return;
       }
 
-
       const icon = {
         url: firstPlace.icon,
         size: new Size(71, 71),
@@ -94,16 +96,7 @@ onMounted(async () => {
         key: firstPlace.formatted_address ?? '' + new Date().getTime(), bounds, icon, title: firstPlace.formatted_address, position: firstPlace.geometry.location
       })
     })
-    // search button event
-    /*
-    onClickSearch.value = () => {
-      google.maps.event.trigger(searchBoxInst, 'focus', {});
-      //google.maps.event.trigger(input, 'keydown', { keyCode: 13 });
-      google.maps.event.trigger(this, 'focus', {});
-    };
-    */
   } catch (error) {
-    // TODO
   }
 })
 </script>

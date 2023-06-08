@@ -6,9 +6,10 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
+import type { MarkerProps } from "@/model/MarkerProps"
 
 const props = defineProps<{
-  markers: any[],
+  markers: Array<MarkerProps>,
   toLocation: boolean,
 }>()
 const emits = defineEmits(['change-location-status'])
@@ -20,7 +21,7 @@ const currLocation = ref({lat: 0, lng: 0});
 
 onMounted(async () => {
   if (!rootRef.value) {
-    console.warn('地图容器不存在')
+    console.warn('map container does not exist')
     return
   }
 
@@ -63,14 +64,13 @@ watch([() => props.toLocation, googleMapInst], () => {
     emits('change-location-status', false)
     // handleGetLocation(false);
   }
-
 }, { implements: true })
 
 
 watch(() => props.markers, (list) => {
 
   if (list.length === 0) {
-    // 清空谷歌地图
+    // clear google map
     markerMap.forEach((_, key) => {
       const marker = markerMap.get(key);
       marker.setMap(null)
@@ -82,9 +82,10 @@ watch(() => props.markers, (list) => {
   list.forEach(marker => {
     if (markerMap.has(marker.key)) return;
     const { key, icon, title, position, bounds } = marker;
-    // 没有
+    
     google.maps.importLibrary("marker") 
       .then((markerLib: google.maps.MarkerLibrary) => {
+        console.log(markerLib)
         
         const marker = new markerLib.Marker({
           map: googleMapInst.value, icon, title, position
@@ -96,11 +97,11 @@ watch(() => props.markers, (list) => {
       })
   })
 
-  markerMap.forEach((item, key) => {
+  markerMap.forEach((_, key) => {
     const find = list.find(item => item.key === key);
     debugger
     if (!find) {
-      // 找不到表示已经删除
+      // if can't find, it already deleted from 
       const marker = markerMap.get(key);
       marker.setMap(null)
       markerMap.delete(key)

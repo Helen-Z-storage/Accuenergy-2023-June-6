@@ -14,6 +14,5 @@ const handleGetLocation = () => {
   position: absolute;
   left: 12px;
   top: 12px;
-
 }
 </style>

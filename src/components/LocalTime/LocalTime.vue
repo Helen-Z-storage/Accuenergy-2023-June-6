@@ -62,20 +62,6 @@ watch(() => props.lastMarker, async () => {
   localTimeZoneName.value = timeZoneName
   console.log(timeZoneResponse)
 })
-
-// const currDate = ref(new Date())
-// const timeZoneOffset = ref(new Date().getTimezoneOffset())
-// const timeZoneName = ref("")
-
-// const utcTimestampInSec = computed(() => Math.floor(currDate.value.getTime() + currDate.value.getTimezoneOffset() / 1000))
-// const lat = computed(props.lastMarker.lat())
-// const lng = computed(props.lastMarker.lng())
-// const timeZoneResponse = await fetchTimeZoneByLocationAndTimestamp(lat, lng, utcTimestampInSec)
-// const { dstOffset, rawOffset, timeZoneName: timeZoneName1  } = timeZoneResponse
-// timeZoneOffset.value = (dstOffset + rawOffset) * 1000
-// timeZoneName.value = timeZoneName1
-// const localTime = computed(() => new Date(new Date().getTime() + timeZoneOffset.value).toLocaleString())
-
 </script>
 
 <style lang="scss" scoped>

@@ -12,9 +12,11 @@ import SearchBoxVue from '@/components/SearchBox';
 import MarkerListVue from '@/components/MarkerList';
 import CurrLocationVue from '@/components/CurrLocation';
 import LocalTimeVue from '@/components/LocalTime';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, type Ref } from 'vue';
 
-const markerDataList = ref([]);
+import type { MarkerProps } from "@/model/MarkerProps.ts"
+
+const markerDataList: Ref<MarkerProps[]> = ref([]);
 const lastMarker = ref()
 const panToCurrLocation = ref(true);
 const currLocation = ref({lat: 0, lng: 0});
@@ -27,15 +29,16 @@ const handleGetLocation = (value: boolean) => {
   panToCurrLocation.value = value;
 }
 
-const handleSelected = (data: any) => {
+const handleSelected = (data: MarkerProps) => {
+  console.log(data, typeof data.key, typeof data.bounds, typeof data.icon, typeof data.title, typeof data.position)
   markerDataList.value.unshift(data);
   console.log(lastMarker)
   lastMarker.value = data
   handleGetLocation(false);
 }
 
-const handleDelete = (list: any[]) => {
-  const newList = [];
+const handleDelete = (list: Array<string>) => {
+  const newList: Array<MarkerProps> = [];
   markerDataList.value.forEach(item => {
     if (!list.includes(item.key)) {
       newList.unshift(item)
@@ -65,14 +68,5 @@ onMounted(() => {
     console.warn("Browser doesn't support Geolocation")
     return
   }
-}
-  
-
-)
+})
 </script>
-
-
-
-<style lang="scss" scoped>
-
-</style>
