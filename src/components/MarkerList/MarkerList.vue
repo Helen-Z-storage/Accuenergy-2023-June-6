@@ -9,12 +9,18 @@
         </label>
       </template>
     </div>
-
+    
     <table>
       <tbody>
         <tr>
-          <td v-for="item in totalPages" @click="paging.page = item">
-            {{ item }}
+          <td>
+            <button v-if="prevPage" @click="goPrevPage">Previous</button>
+          </td>
+          <td>
+            <div>Page {{ paging.page }}</div>
+          </td>
+          <td>
+            <button v-if="nextPage" @click="goNextPage">Next</button>
           </td>
         </tr>
       </tbody>
@@ -23,8 +29,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, type Ref } from 'vue';
+import { ref, computed, watch, type Ref, toRefs, reactive } from 'vue';
 import type { MarkerProps } from "@/model/MarkerProps"
+import findPreviousAndNextPages from "@/utils/findPreviousAndNextPages";
 
 const props = defineProps<{
   markers: Array<MarkerProps>
@@ -35,19 +42,33 @@ const handleDelete = () => {
   emits('delete', selectedMarker.value)
 }
 
-const paging = ref({ page: 1, size: 2 })
+const paging = toRefs(reactive({ page: 1, size: 2 }))
 
 watch([...props.markers], () => {
-  paging.value.page = 1;
+  paging.page.value = 1;
 })
 
 const totalPages = computed(() => {
-  return Math.ceil(props.markers.length / paging.value.size)
+  return Math.ceil(props.markers.length / paging.size.value)
 })
 const paginatedMarkers = computed(() => {
-  return props.markers.slice((paging.value.page - 1) * paging.value.size, paging.value.page * paging.value.size)
+  return props.markers.slice((paging.page.value - 1) * paging.size.value, paging.page.value * paging.size.value)
 })
 
+const { prevPage, nextPage } = findPreviousAndNextPages(paging.page, totalPages);
+const goPrevPage = () => {
+  console.log(prevPage.value)
+  if (prevPage.value) {
+    paging.page.value = prevPage.value
+  }
+}
+const goNextPage = () => {
+  console.log(nextPage.value)
+  if (nextPage.value) {
+    paging.page.value = nextPage.value
+    console.log(paging)
+  }
+}
 </script>
 
 <style lang="scss" scoped>
