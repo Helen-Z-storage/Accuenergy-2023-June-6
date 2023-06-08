@@ -10,7 +10,7 @@ import fetchTimeZoneByLocationAndTimestamp from "@/api/fetchTimeZoneByLocationAn
 import type { MarkerProps } from "@/model/MarkerProps"
 
 const props = defineProps<{
-  lastMarker: MarkerProps
+  lastMarker: MarkerProps | undefined
 }>()
 
 const currDate = ref(new Date())
@@ -54,14 +54,11 @@ onMounted(() => {
 
 watch(() => props.lastMarker, async () => {
   if (!props.lastMarker || !props.lastMarker.position) return;
-  console.log(props.lastMarker)
   const { lat, lng } = props.lastMarker.position
-  console.log(lat, lng)
   const timeZoneResponse = await fetchTimeZoneByLocationAndTimestamp(lat(), lng(), utcTimestampInSec.value)
   const { dstOffset, rawOffset, timeZoneName } = timeZoneResponse
   timeZoneOffsetInSec.value = (dstOffset + rawOffset) * 1000
   localTimeZoneName.value = timeZoneName
-  console.log(timeZoneResponse)
 })
 </script>
 

@@ -9,7 +9,7 @@
         </label>
       </template>
     </div>
-    
+
     <table>
       <tbody>
         <tr>
@@ -42,7 +42,7 @@ const handleDelete = () => {
   emits('delete', selectedMarker.value)
 }
 
-const paging = toRefs(reactive({ page: 1, size: 2 }))
+const paging = toRefs(reactive({ page: 1, size: 10 }))
 
 watch([...props.markers], () => {
   paging.page.value = 1;

@@ -46,7 +46,7 @@ onMounted(async () => {
   try {
     const MapsLibrary = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;;
     googleMapInst.value = new MapsLibrary.Map(rootRef.value, {
-      zoom: 7,
+      zoom: 13,
       center: currLocation.value,
       disableDefaultUI: true
     })
@@ -58,9 +58,7 @@ onMounted(async () => {
 const markerMap = new Map();
 watch([() => props.toLocation, googleMapInst], () => {
   if (props.toLocation && googleMapInst.value) {
-    console.log("props.toLocation")
     googleMapInst.value.setCenter(currLocation.value);
-    console.log("set center")
     emits('change-location-status', false)
     // handleGetLocation(false);
   }
@@ -85,8 +83,6 @@ watch(() => props.markers, (list) => {
     
     google.maps.importLibrary("marker") 
       .then((markerLib: google.maps.MarkerLibrary) => {
-        console.log(markerLib)
-        
         const marker = new markerLib.Marker({
           map: googleMapInst.value, icon, title, position
         })
@@ -99,7 +95,6 @@ watch(() => props.markers, (list) => {
 
   markerMap.forEach((_, key) => {
     const find = list.find(item => item.key === key);
-    debugger
     if (!find) {
       // if can't find, it already deleted from 
       const marker = markerMap.get(key);

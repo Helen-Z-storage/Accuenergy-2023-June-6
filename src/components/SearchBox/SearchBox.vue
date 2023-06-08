@@ -12,19 +12,19 @@ const emits = defineEmits(['selected-address'])
 
 const inputRef = ref();
 const searchBoxInst = ref<google.maps.places.SearchBox>();
-//const onClickSearch = ref();
+
 const handleClick = async () => {
   inputRef.value.focus()
   const { AutocompleteService, PlacesService } = await google.maps.importLibrary('places') as google.maps.PlacesLibrary
   const { LatLngBounds, Size, Point } = await google.maps.importLibrary('core') as google.maps.CoreLibrary;
   const bounds = new LatLngBounds();
+
   const autocompleteService = new AutocompleteService();
   autocompleteService.getPlacePredictions({ input: inputRef.value.value }, function (predictions, status) {
     if (status != google.maps.places.PlacesServiceStatus.OK) {
       alert(status);
       return;
     }
-    debugger
 
     if (predictions && predictions.length > 0) {
       var place = predictions[0];
@@ -56,16 +56,17 @@ const handleClick = async () => {
     }
   });
 }
+
 onMounted(async () => {
   if (!inputRef.value) {
-    console.warn('输入容器不存在')
+    console.warn('input container does not exist')
     return
   }
 
   try {
     const PlacesLibrary = await google.maps.importLibrary("places") as google.maps.PlacesLibrary
     searchBoxInst.value = new PlacesLibrary.SearchBox(inputRef.value)
-    // 绑定 event
+    // bind event
     searchBoxInst.value.addListener('places_changed', async () => {
       const places = searchBoxInst.value!.getPlaces() as google.maps.places.PlaceResult[];
 
@@ -104,7 +105,7 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .searchBox {
   position: absolute;
-  top: 0;
+  top: 12px;
   left: 50%;
   transform: translate(-50%, 0);
 }
