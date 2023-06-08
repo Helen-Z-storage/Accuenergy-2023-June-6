@@ -2,20 +2,30 @@
   <div class="markerList">
     <button @click="handleDelete">删除选中的Marker</button>
     <div class="markerList_main">
-      <template v-for="item in markers">
+      <template v-for="item in paginatedMarkers">
         <label class="markerList_item" :for="item.key">
           <input :id="item.key" name="marker" type="checkbox" :value="item.key" v-model="selectedMarker" >
           <span>{{ item.title }}</span>
         </label>
       </template>
     </div>
+
+    <table>
+      <tbody>
+        <tr>
+          <td v-for="item in totalPages" @click="paging.page = item">
+            {{ item }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, watch } from 'vue';
 
-defineProps<{
+const props = defineProps<{
   markers: any[]
 }>()
 const emits = defineEmits(['delete'])
@@ -23,6 +33,20 @@ const selectedMarker = ref([])
 const handleDelete = () => {
   emits('delete', selectedMarker.value)
 }
+
+
+const paging = ref({ page: 1, size: 2 })
+watch([...props.markers], () => {
+  paging.value.page = 1;
+})
+
+const totalPages = computed(() => {
+  return Math.ceil(props.markers.length / paging.value.size)
+})
+const paginatedMarkers = computed(() => {
+  return props.markers.slice((paging.value.page - 1) * paging.value.size, paging.value.page * paging.value.size)
+})
+
 </script>
 
 <style lang="scss" scoped>
