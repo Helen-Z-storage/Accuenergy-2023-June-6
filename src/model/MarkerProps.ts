@@ -3,5 +3,5 @@ export interface MarkerProps {
   bounds: google.maps.LatLngBounds
   icon: google.maps.Icon
   title: string
-  position: google.maps.LatLngLiteral
+  position: google.maps.LatLng
 }
