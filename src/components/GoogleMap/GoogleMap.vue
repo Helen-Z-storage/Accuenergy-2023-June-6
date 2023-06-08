@@ -11,6 +11,7 @@ const props = defineProps<{
   markers: any[],
   toLocation: boolean,
 }>()
+const emits = defineEmits(['change-location-status'])
 
 const rootRef = ref();
 const googleMapInst = ref();
@@ -54,15 +55,16 @@ onMounted(async () => {
 })
 
 const markerMap = new Map();
-watch(() => props.toLocation, (toLocation) => {
-  if (toLocation && googleMapInst.value) {
+watch([() => props.toLocation, googleMapInst], () => {
+  if (props.toLocation && googleMapInst.value) {
     console.log("props.toLocation")
     googleMapInst.value.setCenter(currLocation.value);
     console.log("set center")
+    emits('change-location-status', false)
     // handleGetLocation(false);
   }
 
-})
+}, { implements: true })
 
 
 watch(() => props.markers, (list) => {

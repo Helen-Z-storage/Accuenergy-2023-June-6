@@ -1,7 +1,7 @@
 <template>
   <div class="searchBox">
     <input type="text" ref="inputRef">
-    <!--<button id="search-button">Search</button>-->
+    <button id="search-button" @click="handleClick">Search</button>
   </div>
 </template>
 
@@ -13,7 +13,46 @@ const emits = defineEmits(['selected-address'])
 const inputRef = ref();
 const searchBoxInst = ref<google.maps.places.SearchBox>();
 //const onClickSearch = ref();
+const handleClick = async () => {
+  inputRef.value.focus()
+  const { AutocompleteService, PlacesService } = await google.maps.importLibrary('places') as google.maps.PlacesLibrary
+  const { LatLngBounds, Size, Point } = await google.maps.importLibrary('core') as google.maps.CoreLibrary;
+  const bounds = new LatLngBounds();
+  const autocompleteService = new AutocompleteService();
+  autocompleteService.getPlacePredictions({ input: inputRef.value.value }, function (predictions, status) {
+    if (status != google.maps.places.PlacesServiceStatus.OK) {
+      alert(status);
+      return;
+    }
+    debugger
 
+    if (predictions && predictions.length > 0) {
+      var place = predictions[0];
+      console.log('First place found: ', place);
+
+      const placesService = new PlacesService(document.createElement('div'));
+      var placeId = predictions[0].place_id;
+      placesService.getDetails({ placeId: placeId }, function (place, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          console.log('First place found: ', place);
+
+          const icon = {
+            url: place.icon,
+            size: new Size(71, 71),
+            origin: new Point(0, 0),
+            anchor: new Point(17, 34),
+            scaledSize: new Size(25, 25),
+          };
+
+          emits('selected-address', {
+            key: place.formatted_address ?? '' + new Date().getTime(), bounds, icon, title: place.formatted_address, position: place.geometry.location
+          })
+        }
+      });
+
+    }
+  });
+}
 onMounted(async () => {
   if (!inputRef.value) {
     console.warn('输入容器不存在')
@@ -42,7 +81,6 @@ onMounted(async () => {
         return;
       }
 
-      await google.maps.importLibrary('marker') as google.maps.MarkerLibrary
 
       const icon = {
         url: firstPlace.icon,
@@ -53,7 +91,7 @@ onMounted(async () => {
       };
 
       emits('selected-address', {
-        key: firstPlace.formatted_address??'' + new Date().getTime(), bounds, icon, title: firstPlace.formatted_address, position: firstPlace.geometry.location
+        key: firstPlace.formatted_address ?? '' + new Date().getTime(), bounds, icon, title: firstPlace.formatted_address, position: firstPlace.geometry.location
       })
     })
     // search button event

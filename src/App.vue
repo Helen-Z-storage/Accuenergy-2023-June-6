@@ -1,9 +1,9 @@
 <template>
-  <google-map-vue :toLocation="panToCurrLocation" :markers="markerDataList" :currLocation="currLocation" @setCurrLocation="setCurrLocation"/>
+  <google-map-vue @change-location-status="panToCurrLocation = false" :toLocation="panToCurrLocation" :markers="markerDataList" :currLocation="currLocation" @setCurrLocation="setCurrLocation"/>
   <search-box-vue @selected-address="handleSelected" />
   <marker-list-vue :markers="markerDataList" @delete="handleDelete" />
   <curr-location-vue @currLocation="handleGetLocation" />
-  <local-time-vue :lastMarker = lastMarker />
+  <LocalTimeVue :lastMarker = lastMarker />
 </template>
 
 <script setup lang="ts">
